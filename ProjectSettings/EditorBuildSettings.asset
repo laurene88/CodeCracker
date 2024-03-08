@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/MainMenu.unity
+    guid: cfda4f0eddb1de24db78c1d06f28a21b
+  - enabled: 1
+    path: Assets/Scenes/CyberPassword.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Keypad.unity
+    guid: 07a8bde246ac56f40b566068e979ec46
   m_configObjects: {}
