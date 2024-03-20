@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 public class DigitalDisplay : MonoBehaviour
@@ -96,6 +97,7 @@ public class DigitalDisplay : MonoBehaviour
         }
     }
 
+    // Changes the Display code sprites, depending on the digit of the code entered, either 1,2,3 or 4.
     private void DisplayCodeSequence(int digitJustEntered){
         switch (codeSequence.Length)
         {
@@ -129,15 +131,27 @@ public class DigitalDisplay : MonoBehaviour
     private void CheckResults(){
         if (codeSequence == correctCode)
         {
-            Debug.Log(codeSequence+ " : "+correctCode);
-            Debug.Log("you win");
+            DisplayReactionToCorrectInput();
             ResetDisplay();
         } else {
-            Debug.Log("you lose");
+            DisplayReactionToIncorrectInput();
             ResetDisplay();
         }
     }
 
+    public void DisplayReactionToIncorrectInput()
+    {
+        Debug.Log("you lose");
+        ResetDisplay();
+    }
+
+    public void DisplayReactionToCorrectInput()
+    {            
+        Debug.Log(codeSequence+ " : "+correctCode);
+        Debug.Log("you win");
+    }
+
+    // Resets current code sequence and all digit displays to blank.
     private void ResetDisplay()
     {
         for (int i = 0; i < characters.Length; i++){

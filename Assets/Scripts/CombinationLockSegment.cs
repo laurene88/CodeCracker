@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-public class RotatingLockSegment : MonoBehaviour
+public class CombinationLockSegment : MonoBehaviour
 {
     // For one digit slot of a lock.
     // Set on the Panel, with image/2xbuttons linked.
@@ -17,18 +18,22 @@ public class RotatingLockSegment : MonoBehaviour
      public Button upButton;
      public Button downButton;
 
+    public UnityEvent recheckLock;
+
     private void Awake()
     {
         currentDigit = 0;
       //  digitImage = GetComponentInChildren<Image>();
-        Debug.Log(digitImage.name);
+       // Debug.Log(digitImage.name);
         UpdateDigit();
+
     }
 
     public void UpButtonPressed()
     {
         currentDigit = (currentDigit + 1) % 10;
         UpdateDigit();
+        recheckLock.Invoke();
     }
 
     public void DownButtonPressed()
@@ -38,7 +43,8 @@ public class RotatingLockSegment : MonoBehaviour
             } else {
             currentDigit--;
             }
-        UpdateDigit();
+        UpdateDigit();        
+        recheckLock.Invoke();
     }
 
     private void UpdateDigit()

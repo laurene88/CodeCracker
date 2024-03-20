@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Keypad.unity
     guid: 07a8bde246ac56f40b566068e979ec46
+  - enabled: 1
+    path: Assets/Scenes/BriefcaseLock.unity
+    guid: efce6c7922a59e14da510f57a27e274c
+  - enabled: 1
+    path: Assets/Scenes/CombinationPadlock.unity
+    guid: 793ef0f485ea04847a6b8f7b876c1c8a
   m_configObjects: {}
