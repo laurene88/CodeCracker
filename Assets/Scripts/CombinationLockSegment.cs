@@ -54,4 +54,4 @@ public class CombinationLockSegment : MonoBehaviour
 
 }
 
-    // (if all digits & images correct - auto open.) - this can be done by a separate panel code.
+    // (if all digitSprites & images correct - auto open.) - this can be done by a separate panel code.

@@ -1,48 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 public class DigitalDisplay : MonoBehaviour
 {
+    // Parent class that updates a display relative to buttons pressed.
+    // Subscribes to PushKeypadButton.ButtonPressed.
+
     // Digital Display associated with Keypad buttons
-    private string correctCode = "1234";
+    public string correctCode;
     
     // digit images to display
-    [SerializeField] private Sprite[] digits;
-    [SerializeField] private Sprite blankDisplaySprite;
+    //NO! THESE ARENT ALWAYS SPRITES.
+    [SerializeField] public Sprite[] digits;
+    [SerializeField] public Sprite blankDisplaySprite;
 
     // Digit Display areas on 'keypad screen'
-    [SerializeField] private Image[] characters;
-    private string codeSequence;
+    [SerializeField] public Image[] characters;
+
+    public string codeSequence = "";
 
 
-    public void CheckButtonPress(){
-            CheckResults();
-        }
-
-
-    //could call on awake to instantiate correct numbers of 
-    // display character boxes.
-
-    
     // Start is called before the first frame update
     void Start()
     {
-        codeSequence = "";
-
+        StartGame();
+        //Can probably get rid of this, just set correctly in scene.
         for (int i = 0; i <= characters.Length-1; i++)
         {
             characters[i].sprite = blankDisplaySprite; //all show the blank one originally
         }
         //subscribe this script to buttonPressed event.
+       
+    }
+
+    public virtual void StartGame()
+    {        
+        SetCorrectAnswer();
         PushKeypadButton.ButtonPressed += AddDigitToCodeSequence;
+    }
+    public virtual void SetCorrectAnswer()
+    {
+        correctCode = "1234";
     }
 
 
-    private void AddDigitToCodeSequence(string digitEntered){
-        if (codeSequence.Length < correctCode.Length){
-            switch (digitEntered){
+    public void AddDigitToCodeSequence(string digitEntered){
+        if (codeSequence.Length < correctCode.Length)
+        {
+            switch (digitEntered)
+            {
                 case "0":
                     codeSequence += "0";
                     DisplayCodeSequence(0);
@@ -86,19 +96,22 @@ public class DigitalDisplay : MonoBehaviour
                 default:
                     Debug.Log("default case");
                     break;
-              //  case "*":
-                  //  codeSequence += "*";
+                    //  case "*":
+                    //  playerEnteredCodeSequence += "*";
                     //DisplayCodeSequence();  NOTE tutorial vid includes these separately
-                   // break;
-                //case "#":
-                  //  CheckResults();
+                    // break;
+                    //case "#":
+                    //  CheckResults();
             }
-        
         }
+            if (codeSequence.Length == correctCode.Length)
+            {
+               FinishedEnteringCode();
+            }
     }
 
     // Changes the Display code sprites, depending on the digit of the code entered, either 1,2,3 or 4.
-    private void DisplayCodeSequence(int digitJustEntered){
+    public virtual void DisplayCodeSequence(int digitJustEntered){
         switch (codeSequence.Length)
         {
             case 1:
@@ -128,31 +141,38 @@ public class DigitalDisplay : MonoBehaviour
         }
     }
 
-    private void CheckResults(){
+    // Allows option to check results as soon as code is finished being entered.
+    public virtual void FinishedEnteringCode() 
+    { 
+        Invoke(nameof(CheckResults), 2f); // call when finished entering, but with a pause.
+    }
+
+    // Checks results, may be as soon as code is finished being entered, or by specific button press.
+    public virtual void CheckResults(){
         if (codeSequence == correctCode)
         {
             DisplayReactionToCorrectInput();
-            ResetDisplay();
         } else {
             DisplayReactionToIncorrectInput();
-            ResetDisplay();
         }
     }
 
-    public void DisplayReactionToIncorrectInput()
+    public virtual void DisplayReactionToIncorrectInput()
     {
         Debug.Log("you lose");
-        ResetDisplay();
+        Invoke(nameof(ResetAttempt), 1f);
     }
 
-    public void DisplayReactionToCorrectInput()
+    public virtual void DisplayReactionToCorrectInput()
     {            
         Debug.Log(codeSequence+ " : "+correctCode);
         Debug.Log("you win");
+        Invoke(nameof(ResetAttempt), 1f);
     }
 
     // Resets current code sequence and all digit displays to blank.
-    private void ResetDisplay()
+    // Will never need to do separately as are entwined.
+    public virtual void ResetAttempt()
     {
         for (int i = 0; i < characters.Length; i++){
             characters[i].sprite = blankDisplaySprite;
@@ -160,7 +180,7 @@ public class DigitalDisplay : MonoBehaviour
         codeSequence = "";
     }
 
-    // remove listener if not needed.
+    // remove listener if no longer needed.
     private void OnDestroy(){
         PushKeypadButton.ButtonPressed -= AddDigitToCodeSequence;
     }

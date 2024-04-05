@@ -8,18 +8,18 @@ using Unity.VisualScripting;
 public class StarDisplay : MonoBehaviour
 {
     // Digital Display associated with Keypad buttons
-    private string correctCode = "1234";
+    private readonly string correctCode = "1234";
     [SerializeField] private TMP_Text textreference;
     private string codeSequence;
     public Image lightImage;
+    public Color lightImageColor;
 
-
- 
 
     void Start()
     {
         codeSequence = "";
         textreference.text = "";
+        lightImageColor = lightImage.color;
         //subscribe this script to buttonPressed event.
         PushKeypadButton.ButtonPressed += AddDigitToCodeSequence;
     }
@@ -49,8 +49,8 @@ public class StarDisplay : MonoBehaviour
                     textreference.text = textreference.text + "*";
                     break;
                 case "4":
-                    textreference.text = textreference.text + "*";
                     codeSequence += "4";
+                    textreference.text = textreference.text + "*";
                     break;
                 case "5":
                     codeSequence += "5";
@@ -69,14 +69,14 @@ public class StarDisplay : MonoBehaviour
                     textreference.text = textreference.text + "*";
                     break;
                 case "9":
-                    textreference.text = textreference.text + "*";
                     codeSequence += "9";
+                    textreference.text = textreference.text + "*";
                     break;
                 default:
                     Debug.Log("default case");
                     break;
                     //  case "*":
-                    //  codeSequence += "*";
+                    //  playerEnteredCodeSequence += "*";
                     //DisplayCodeSequence();  NOTE tutorial vid includes these separately
                     // break;
                     //case "#":
@@ -84,15 +84,19 @@ public class StarDisplay : MonoBehaviour
             }
             if (codeSequence.Length == correctCode.Length)
             {
-                StartCoroutine(CheckResults());
+                Invoke(nameof(CheckResults), 0.5f);
             }
         }
     }
 
-
-    IEnumerator CheckResults()
+    IEnumerator ShortPause()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(2f);
+    }
+
+    public void CheckResults()
+    {
+      //  StartCoroutine(ShortPause());
         if (codeSequence == correctCode)
         {
             DisplayReactionToCorrectInput();
@@ -101,9 +105,25 @@ public class StarDisplay : MonoBehaviour
         {
             DisplayReactionToIncorrectInput();
         }
-        yield return new WaitForSeconds(1f);
-        ResetAttempt();
+        // StartCoroutine(ShortPause());
+        Invoke(nameof(ResetAttempt), 1f) ;
     }
+
+    //IEnumerator CheckResults()
+    //{
+    //    yield return new WaitForSeconds(0.2f);
+    //    if (codeSequence == correctCode)
+    //    {
+    //        DisplayReactionToCorrectInput();
+    //    }
+    //    else
+    //    {
+    //        DisplayReactionToIncorrectInput();
+    //    }
+    //    yield return new WaitForSeconds(1f);
+    //    ResetAttempt();
+    //}
+
 
     public void  DisplayReactionToIncorrectInput()
     {
@@ -118,15 +138,12 @@ public class StarDisplay : MonoBehaviour
         Debug.Log("you win");
     }
 
- 
-
-
     // Resets current code sequence and all digit displays to blank.
     private void ResetAttempt()
     {
         textreference.text = "";
         codeSequence = "";
-        lightImage.GetComponent<Image>().color = Color.white;
+        lightImage.GetComponent<Image>().color = lightImageColor;
     }
 
     // remove listener if not needed.
